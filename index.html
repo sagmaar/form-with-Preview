@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> your title </title>
+  <style>
+body {
+  font-family : Arial, Helvetica, sans-serif;
+  font-size   : 16px;
+  }
+body.onForm  table,
+body.onTable form  { display: none }
+
+label {
+  display       : block;
+  margin-bottom : .2rem;
+  }
+label b {
+  display   : block;
+  font-size : .8rem;
+  }
+label textarea {
+  width  : 20rem;
+  height : 5rem; 
+  }
+table {
+  background-color: darkslategrey;
+  border-collapse  : separate;
+  border-spacing   : 1px;
+  margin           : 1rem;
+  }
+table caption {
+  padding      : .4rem;
+  caption-side : bottom;
+  text-align   : right;
+  }
+th {
+  background-color : #7cc0e7;
+  padding          : .2rem .3rem;
+  }
+td {
+  background-color : white;
+  padding          : .2rem .3rem;
+  }
+  </style>
+</head>
+<body class="onForm">
+
+<form name="save-later-form">
+  <label>
+    <b>Email</b>
+    <input type="text" name="Email" placeholder="Enter Email"required value="">
+  </label>
+  <label>
+    <b>First name</b>
+    <input type="text" name="Firstname" placeholder="First name" required value="">
+  </label>
+  <label>
+    <b>Last name</b>
+    <input type="text" name="Lastname" placeholder="Last name" required value="">
+  </label>
+  <label>
+    <b>Business</b>
+    <select name="Business">
+      <option value="Food & Beverage" > Food & Beverage  </option>
+      <option value="Restaurants"     > Restaurants      </option>
+      <option value="Pet Shops"       > Pet Shops        </option>
+      <option value="Fashion Boutique"> Fashion Boutique </option>
+    </select>
+  </label>
+  <label>
+    <b>Description</b>
+    <textarea name="Description" placeholder="Describe yourself in 100 words"></textarea>
+  </label>
+  <button type="reset" > reset    </button>
+  <button type="submit"> Submit   </button>
+  <button type="button" id="go-Table-Btn"> go 2 table </button>
+</form>
+
+<table id="t-business">
+  <caption><button id="go-form-Btn"> go 2 form</button></caption>
+  <thead>
+    <tr><th>Email</th><th>Firstname</th><th>Lastname</th><th>Business</th><th>Description</th></tr>
+  </thead>
+  <tbody></tbody>
+</table>
+</table>
+  <script>
+const 
+  saveLaterForm = document.forms['save-later-form']
+, goTableBtn    = document.querySelector('#go-Table-Btn')
+, goFormBtn     = document.querySelector('#go-form-Btn')
+, ElmsOrder     = ['Email','Firstname','Lastname','Business','Description']
+, ls_business   = JSON.parse( localStorage.getItem('ls_business') || '[]')
+, tBusinessB    = document.querySelector('#t-business tbody')
+  ;
+saveLaterForm.onsubmit = e =>
+  {
+  e.preventDefault()
+  let formInputs = Object.fromEntries( new FormData(saveLaterForm).entries() ) 
+  ls_business.push(formInputs)
+  addRow( formInputs )
+  localStorage.setItem('ls_business',JSON.stringify(ls_business))
+  document.body.classList.replace('onForm','onTable')
+  saveLaterForm.reset()
+  }
+
+for (let lsRow of ls_business) addRow( lsRow )
+
+function addRow( elms )
+  {
+  let row = tBusinessB.insertRow()
+  for (let elName of ElmsOrder) row.insertCell().textContent = elms[elName]
+  } 
+
+goTableBtn.onclick =_=> document.body.classList.replace('onForm','onTable')
+goFormBtn.onclick  =_=> document.body.classList.replace('onTable','onForm')
+
+  </script>
+</body>
+</html>
